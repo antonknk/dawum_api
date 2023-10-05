@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 svy_wide.RDATA
-.json
-.png
+*.json
+*.png
