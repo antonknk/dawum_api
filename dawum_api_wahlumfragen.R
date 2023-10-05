@@ -3,7 +3,6 @@ library(httr)
 library(xml2)
 library(tidyverse)
 library(directlabels)
-setwd("/Users/anton/Documents/data_analysis/R/Arbeit/dawum_api")
 
 
 current <- readr::read_file("https://api.dawum.de/last_update.txt")
