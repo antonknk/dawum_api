@@ -26,53 +26,27 @@ if (cache != current) {
   break
 }
 
-df = data.frame()
+as_df_tibble <- function(x) tibble(as.data.frame(x))
 
-for (survey in dawum_json$Surveys) {
-  #print(survey)
-  tempdf <- as.data.frame(survey)
-  df <- bind_rows(df, tempdf)
-}
+df <- map_dfr(dawum_json$Surveys, as_df_tibble)
 
 # Namen der Parteien inkludieren
-partynamecodes <- names(dawum_json$Parties)
-df_parties = data.frame()
-for (partycode in partynamecodes) {
-  tempdf_parties <- as.data.frame(dawum_json$Parties[[partycode]])
-  tempdf_parties$id <- partycode
-  df_parties <- bind_rows(df_parties, tempdf_parties)  
-}
+df_parties <- map_dfr(dawum_json$Parties, as_df_tibble)
+df_parties$id <- names(dawum_json$Parties)
 
 # Namen der Parlamente inkludieren
-parliamentcodes <- names(dawum_json$Parliaments)
-df_parliaments = data.frame()
-for (parliamentcode in parliamentcodes) {
-  tempdf_parliaments <- as.data.frame(dawum_json$Parliaments[[parliamentcode]])
-  tempdf_parliaments$id <- parliamentcode
-  df_parliaments <- bind_rows(df_parliaments, tempdf_parliaments)  
-}
+df_parliaments <- map_dfr(dawum_json$Parliaments, as_df_tibble)
+df_parliaments$id <- names(dawum_json$Parliaments)
 
 # Informationen zu Auftraggeber hinzufügen
-tasker_ids <- names(dawum_json$Taskers)
-df_taskers = data.frame()
-for (tasker in tasker_ids) {
-  tempdf_taskers <- as.data.frame(dawum_json$Taskers[[tasker]])
-  tempdf_taskers$id <- tasker
-  df_taskers <- bind_rows(df_taskers, tempdf_taskers)  
-}
-df_taskers <-  df_taskers %>% rename("Auftraggeber" = "Name")
-
+df_taskers <- map_dfr(dawum_json$Taskers, as_df_tibble) %>%
+  rename("tasker" = "Name")
+df_taskers$id <- names(dawum_json$Taskers)
 
 # Infos zum Institut
-institut_ids <- names(dawum_json$Institutes)
-df_institutes <- data.frame()
-for (institute in institut_ids) {
-  tempdf_institutes <- as.data.frame(dawum_json$Institutes[[institute]])
-  tempdf_institutes$id <- institute
-  df_institutes <- bind_rows(df_institutes, tempdf_institutes)
-}
-
-df_institutes <- rename(df_institutes, "institut" = "Name")
+df_institutes <- map_dfr(dawum_json$Institutes, as_df_tibble) %>%
+  rename("institute" = "Name")
+df_institutes$id <- names(dawum_json$Institutes)
 
 
 df_long <- df %>%
