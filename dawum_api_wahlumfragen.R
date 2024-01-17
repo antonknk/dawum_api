@@ -28,7 +28,7 @@ if (cache != current) {
 
 as_df_tibble <- function(x) tibble(as.data.frame(x))
 
-df <- tibble(map_dfr(dawum_json$Surveys, as_df_tibble))
+df <- map_dfr(dawum_json$Surveys, as_df_tibble)
 
 # Namen der Parteien inkludieren
 df_parties <- map_dfr(dawum_json$Parties, as_df_tibble)
